@@ -1,0 +1,33 @@
+experiment:
+  name: pqfg_p5_q4_l2_none
+  seed: 42
+  description: >
+    Four-qubit, two-layer PQFG without entanglement,
+    inserted after YOLO11n layer 10.
+
+model:
+  detector: yolo11n
+  architecture: yolo11n.yaml
+  pretrained: false
+
+placement:
+  name: backbone_p5
+  target_layer: 10
+  channels: 256
+
+pqfg:
+  enabled: true
+  n_qubits: 4
+  n_layers: 2
+  hidden_dim: 64
+  alpha_init: 0.001
+  entanglement: none
+  gamma: 0.5
+  backend: lightning.qubit
+  diff_method: adjoint
+
+runtime:
+  detector_device: cuda:0
+  quantum_device: cpu
+  dtype: float32
+  quantum_dtype: float64

@@ -1,0 +1,18 @@
+path: ../../data/exdark
+train: images/train
+val: images/val
+test: images/test
+
+names:
+  0: bicycle
+  1: boat
+  2: bottle
+  3: bus
+  4: car
+  5: cat
+  6: chair
+  7: cup
+  8: dog
+  9: motorbike
+  10: people
+  11: table

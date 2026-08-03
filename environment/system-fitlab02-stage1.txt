@@ -1,0 +1,35 @@
+===== Q-VISIONFRAME FITLAB 02 ENVIRONMENT =====
+Timestamp: 2026-08-03T23:07:18+07:00
+Hostname: FITLAB-02.is-tech.vn
+Kernel: 7.0.0-28-generic
+Python: Python 3.12.3
+Python executable: /export/users/1165521/iDragonCloud/QuantumC/.venv-fitlab02/bin/python
+
+===== NVIDIA-SMI =====
+Mon Aug  3 23:07:18 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.173.02             Driver Version: 580.173.02     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Quadro RTX 6000                Off |   00000000:B1:00.0 Off |                  Off |
+| 33%   32C    P8             15W /  260W |   13584MiB /  24576MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A         2566733      C   ...da3/envs/riskprune/bin/python      13578MiB |
++-----------------------------------------------------------------------------------------+
+
+===== NVCC =====
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2023 NVIDIA Corporation
+Built on Fri_Jan__6_16:45:21_PST_2023
+Cuda compilation tools, release 12.0, V12.0.140
+Build cuda_12.0.r12.0/compiler.32267302_0
