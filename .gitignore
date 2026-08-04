@@ -80,3 +80,6 @@ secrets.json
 # Local backup files
 *.backup_*
 *.bak
+
+# Local FIT-LAB access guides and credentials
+/cac_buoc_vao_fitlab/
