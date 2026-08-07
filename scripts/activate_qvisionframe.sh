@@ -12,9 +12,15 @@ HOST_SHORT="$(hostname | cut -d. -f1)"
 case "$HOST_SHORT" in
     FITLAB-01|fitlab-01)
         export QVF_SERVER="FITLAB-01"
+        export QVF_COMPUTE_MODE="cuda"
         ;;
     FITLAB-02|fitlab-02)
         export QVF_SERVER="FITLAB-02"
+        export QVF_COMPUTE_MODE="cuda"
+        ;;
+    FITLAB-03|fitlab-03)
+        export QVF_SERVER="FITLAB-03"
+        export QVF_COMPUTE_MODE="cpu"
         ;;
     *)
         echo "Unsupported hostname: $(hostname)" >&2
