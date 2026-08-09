@@ -6,6 +6,7 @@ ROOT="$(
   pwd
 )"
 cd "$ROOT"
+export PYTHONPATH="$ROOT:${PYTHONPATH:-}"
 
 MODE="${1:---run}"
 
