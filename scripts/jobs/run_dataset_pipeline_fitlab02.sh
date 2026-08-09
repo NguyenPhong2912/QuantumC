@@ -61,7 +61,7 @@ on_error() {
 trap on_error ERR
 
 write_status "waiting" "b0_training"
-while pgrep -f '[t]rain_voc_full.py.*voc_b0' >/dev/null; do
+while pgrep -f '[t]rain_voc_full.py.*--baseline B0' >/dev/null; do
     echo "B0 training is active; dataset pipeline waits 60 seconds"
     sleep 60
 done
