@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import csv
 import json
-import os
 import shutil
 import xml.etree.ElementTree as ET
 from dataclasses import asdict, dataclass
@@ -237,7 +236,7 @@ def convert_annotation(
     )
 
 
-def create_relative_symlink(
+def copy_image_file(
     source: Path,
     destination: Path,
 ) -> None:
@@ -249,12 +248,21 @@ def create_relative_symlink(
     if destination.exists() or destination.is_symlink():
         destination.unlink()
 
-    relative_target = os.path.relpath(
-        source.resolve(),
-        destination.parent.resolve(),
-    )
+    source_size = source.stat().st_size
 
-    destination.symlink_to(relative_target)
+    if source_size == 0:
+        raise ValueError(f"Empty source image: {source}")
+
+    # FITLAB network storage can materialize symlinks or hardlinks as empty
+    # regular files. Copy the image bytes so downstream PIL/YOLO readers see
+    # a normal, independently readable file.
+    shutil.copy2(source, destination)
+
+    if destination.stat().st_size != source_size:
+        raise OSError(
+            "Copied image size mismatch: "
+            f"{source} -> {destination}"
+        )
 
 
 def process_split(
@@ -341,7 +349,7 @@ def process_split(
                     unknown,
                 ) = convert_annotation(source_xml)
 
-                create_relative_symlink(
+                copy_image_file(
                     source=source_image,
                     destination=destination_image,
                 )
