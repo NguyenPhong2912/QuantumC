@@ -42,6 +42,16 @@ def parse_args() -> argparse.Namespace:
         choices=BASELINES,
     )
     parser.add_argument(
+        "--data-yaml",
+        default=str(
+            ROOT / "configs/datasets/voc.yaml"
+        ),
+        help=(
+            "Dataset YAML path. Use a host-local override "
+            "without modifying the canonical repository YAML."
+        ),
+    )
+    parser.add_argument(
         "--epochs",
         type=int,
         default=100,
@@ -111,6 +121,7 @@ def build_overrides(
     *,
     server: str,
     run_name: str,
+    data_yaml: Path,
 ) -> dict[str, Any]:
     project = (
         ROOT
@@ -121,10 +132,7 @@ def build_overrides(
 
     return {
         "model": "yolo11n.yaml",
-        "data": str(
-            ROOT
-            / "configs/datasets/voc.yaml"
-        ),
+        "data": str(data_yaml),
         "epochs": args.epochs,
         "imgsz": args.imgsz,
         "batch": args.batch,
@@ -215,6 +223,11 @@ def main() -> None:
     if not torch.cuda.is_available():
         raise RuntimeError("CUDA is unavailable")
 
+    data_yaml = Path(args.data_yaml).expanduser().resolve()
+
+    if not data_yaml.is_file():
+        raise FileNotFoundError(data_yaml)
+
     resume_from = (
         None
         if args.resume_from is None
@@ -296,12 +309,14 @@ def main() -> None:
         args,
         server=server,
         run_name=run_name,
+        data_yaml=data_yaml,
     )
 
     print("===== Q-VISIONFRAME VOC TRAINING =====")
     print("Server    :", server)
     print("Baseline  :", args.baseline)
     print("Run name  :", run_name)
+    print("Data YAML :", data_yaml)
     print("CUDA      :", torch.cuda.is_available())
     print("GPU       :", torch.cuda.get_device_name(0))
     print("Resume    :", resume_from)
@@ -361,6 +376,7 @@ def main() -> None:
         "cache": args.cache,
         "workers": args.workers,
         "device": args.device,
+        "data_yaml": str(data_yaml),
         "resume_from": (
             None
             if resume_from is None
