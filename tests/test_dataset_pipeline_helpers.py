@@ -83,3 +83,30 @@ def test_corruption_is_deterministic() -> None:
     )
 
     assert np.array_equal(np.asarray(first), np.asarray(second))
+
+
+def test_dataset_pipeline_prioritizes_core_scope() -> None:
+    launcher = (
+        ROOT / "scripts/jobs/run_dataset_pipeline_fitlab02.sh"
+    ).read_text(encoding="utf-8")
+    ordered_steps = [
+        'CURRENT_STEP="01_voc_integrity"',
+        'CURRENT_STEP="02_voc_qa"',
+        'CURRENT_STEP="03_exdark_convert"',
+        'CURRENT_STEP="04_exdark_qa"',
+        'CURRENT_STEP="05_voc_corruptions"',
+        'CURRENT_STEP="06_voc_corruptions_qa"',
+        'CURRENT_STEP="07_core_inventory"',
+        'CURRENT_STEP="08_visdrone_convert"',
+        'CURRENT_STEP="09_visdrone_qa"',
+        'CURRENT_STEP="10_coco2017_convert"',
+        'CURRENT_STEP="11_coco2017_qa"',
+        'CURRENT_STEP="12_bdd100k_download"',
+        'CURRENT_STEP="13_bdd100k_convert"',
+        'CURRENT_STEP="14_bdd100k_qa"',
+        'CURRENT_STEP="15_final_inventory"',
+    ]
+
+    positions = [launcher.index(step) for step in ordered_steps]
+
+    assert positions == sorted(positions)

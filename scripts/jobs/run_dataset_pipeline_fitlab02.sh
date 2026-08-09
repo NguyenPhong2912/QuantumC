@@ -71,43 +71,45 @@ run_step "$CURRENT_STEP" "$PYTHON" scripts/check_voc_yolo_integrity.py
 CURRENT_STEP="02_voc_qa"
 run_step "$CURRENT_STEP" "$PYTHON" scripts/qa_yolo_dataset.py \
     --dataset-id voc
-CURRENT_STEP="03_inventory_after_voc"
-run_step "$CURRENT_STEP" "$PYTHON" scripts/check_datasets.py
 
-CURRENT_STEP="04_exdark_convert"
+# Core dataset scope required before the cross-domain extensions.
+CURRENT_STEP="03_exdark_convert"
 run_step "$CURRENT_STEP" "$PYTHON" scripts/convert_exdark_to_yolo.py --force
-CURRENT_STEP="05_exdark_qa"
+CURRENT_STEP="04_exdark_qa"
 run_step "$CURRENT_STEP" "$PYTHON" scripts/qa_yolo_dataset.py \
     --dataset-id exdark
 
-CURRENT_STEP="06_visdrone_convert"
+CURRENT_STEP="05_voc_corruptions"
+run_step "$CURRENT_STEP" "$PYTHON" scripts/build_voc_corruptions.py \
+    --workers 4
+CURRENT_STEP="06_voc_corruptions_qa"
+run_step "$CURRENT_STEP" "$PYTHON" scripts/qa_voc_corruptions.py
+CURRENT_STEP="07_core_inventory"
+run_step "$CURRENT_STEP" "$PYTHON" scripts/check_datasets.py
+
+# Optional cross-domain and scale extensions.
+CURRENT_STEP="08_visdrone_convert"
 run_step "$CURRENT_STEP" "$PYTHON" scripts/convert_visdrone_to_yolo.py --force
-CURRENT_STEP="07_visdrone_qa"
+CURRENT_STEP="09_visdrone_qa"
 run_step "$CURRENT_STEP" "$PYTHON" scripts/qa_yolo_dataset.py \
     --dataset-id visdrone2019
 
-CURRENT_STEP="08_coco2017_convert"
+CURRENT_STEP="10_coco2017_convert"
 run_step "$CURRENT_STEP" "$PYTHON" scripts/convert_coco2017_to_yolo.py \
     --workers 8 --force
-CURRENT_STEP="09_coco2017_qa"
+CURRENT_STEP="11_coco2017_qa"
 run_step "$CURRENT_STEP" "$PYTHON" scripts/qa_yolo_dataset.py \
     --dataset-id coco2017
 
-CURRENT_STEP="10_bdd100k_download"
+CURRENT_STEP="12_bdd100k_download"
 run_step "$CURRENT_STEP" bash scripts/download_bdd100k_mirror.sh \
     "$PROJECT_ROOT"
-CURRENT_STEP="11_bdd100k_convert"
+CURRENT_STEP="13_bdd100k_convert"
 run_step "$CURRENT_STEP" "$PYTHON" scripts/convert_bdd100k_to_yolo.py \
     --workers 8 --force
-CURRENT_STEP="12_bdd100k_qa"
+CURRENT_STEP="14_bdd100k_qa"
 run_step "$CURRENT_STEP" "$PYTHON" scripts/qa_yolo_dataset.py \
     --dataset-id bdd100k
-
-CURRENT_STEP="13_voc_corruptions"
-run_step "$CURRENT_STEP" "$PYTHON" scripts/build_voc_corruptions.py \
-    --workers 4
-CURRENT_STEP="14_voc_corruptions_qa"
-run_step "$CURRENT_STEP" "$PYTHON" scripts/qa_voc_corruptions.py
 
 CURRENT_STEP="15_final_inventory"
 run_step "$CURRENT_STEP" "$PYTHON" scripts/check_datasets.py
