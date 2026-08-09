@@ -110,3 +110,12 @@ def test_dataset_pipeline_prioritizes_core_scope() -> None:
     positions = [launcher.index(step) for step in ordered_steps]
 
     assert positions == sorted(positions)
+    core_complete = launcher.index(
+        'write_status "complete_core" "$CURRENT_STEP"'
+    )
+    first_extension = launcher.index(
+        'CURRENT_STEP="08_visdrone_convert"'
+    )
+
+    assert '--include-extensions' in launcher
+    assert core_complete < first_extension

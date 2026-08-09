@@ -9,6 +9,19 @@ if [[ "$(git branch --show-current)" != "AnKy06" ]]; then
     exit 2
 fi
 
+RUN_EXTENSIONS=0
+case "${1:-}" in
+    ""|--core-only)
+        ;;
+    --include-extensions)
+        RUN_EXTENSIONS=1
+        ;;
+    *)
+        echo "Usage: $0 [--core-only|--include-extensions]" >&2
+        exit 2
+        ;;
+esac
+
 PYTHON="$PROJECT_ROOT/.venv-fitlab02/bin/python"
 if [[ ! -x "$PYTHON" ]]; then
     echo "Missing FITLAB-02 Python: $PYTHON" >&2
@@ -39,6 +52,11 @@ write_status() {
         printf 'updated_utc=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
         printf 'log_root=%s\n' "$LOG_ROOT"
         printf 'commit=%s\n' "$(git rev-parse HEAD)"
+        if (( RUN_EXTENSIONS )); then
+            printf 'scope=core_and_extensions\n'
+        else
+            printf 'scope=core\n'
+        fi
     } >"$temporary"
     mv "$temporary" "$STATUS_FILE"
 }
@@ -86,6 +104,12 @@ CURRENT_STEP="06_voc_corruptions_qa"
 run_step "$CURRENT_STEP" "$PYTHON" scripts/qa_voc_corruptions.py
 CURRENT_STEP="07_core_inventory"
 run_step "$CURRENT_STEP" "$PYTHON" scripts/check_datasets.py
+
+if (( ! RUN_EXTENSIONS )); then
+    write_status "complete_core" "$CURRENT_STEP"
+    echo "DATASET CORE PIPELINE COMPLETE: $RUN_ID"
+    exit 0
+fi
 
 # Optional cross-domain and scale extensions.
 CURRENT_STEP="08_visdrone_convert"
