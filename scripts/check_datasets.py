@@ -142,17 +142,25 @@ def main() -> None:
             or declared_classes == spec.expected_classes
         )
 
+        status = dataset_status(
+            spec,
+            declared_classes=declared_classes,
+            train_image_count=train_images,
+            val_image_count=val_images,
+            train_label_count=train_labels,
+            val_label_count=val_labels,
+        )
+
+        if status == "ready" and not (
+            train_images == train_labels == paired_train
+            and val_images == val_labels == paired_val
+        ):
+            status = "partial"
+
         check = DatasetCheck(
             dataset_id=dataset_id,
             name=spec.name,
-            status=dataset_status(
-                spec,
-                declared_classes=declared_classes,
-                train_image_count=train_images,
-                val_image_count=val_images,
-                train_label_count=train_labels,
-                val_label_count=val_labels,
-            ),
+            status=status,
             yaml_exists=spec.yaml_path.exists(),
             yaml_valid=yaml_valid,
             declared_classes=declared_classes,
